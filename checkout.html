@@ -1,82 +1,97 @@
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html> <!-- Menandakan ini adalah dokumen HTML5 -->
+<html lang="id"> <!-- Bahasa konten adalah Bahasa Indonesia -->
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - Nama Toko</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8"> <!-- Mengatur karakter supaya bisa menampilkan teks dengan benar -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Agar tampilan responsive di HP -->
+    <title>Checkout - TS Beauty</title> <!-- Judul tab browser -->
+    <link rel="stylesheet" href="style.css"> <!-- Menghubungkan file CSS untuk tampilan -->
 </head>
 <body>
-    <header>
-        <h1>Nama Toko</h1>
-        <nav>
+    <header> <!-- Bagian atas halaman -->
+        <h1>TS Beauty</h1> <!-- Judul toko -->
+        <nav> <!-- Menu navigasi -->
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="produk.html">Produk</a></li>
-                <li><a href="kontak.html">Kontak</a></li>
+                <li><a href="index.html">Home</a></li> <!-- Link ke halaman utama -->
+                <li><a href="produk.html">Produk</a></li> <!-- Link ke halaman produk -->
+                <li><a href="kontak.html">Kontak</a></li> <!-- Link ke halaman kontak -->
                 <li>
                     <a href="keranjang.html">
-                        <i class="fas fa-shopping-cart"></i> (<span id="itemCount">0</span>)
+                        <i class="fas fa-shopping-cart"></i> <!-- Ikon keranjang (pakai font awesome) -->
+                        (<span id="itemCount">0</span>) <!-- Menampilkan jumlah item dalam keranjang -->
                     </a>
                 </li>
             </ul>
         </nav>
     </header>
 
-    <main>
-        <h2>Checkout</h2>
-        <div id="keranjangItems"></div>
-        <p id="totalHarga"></p>
+    <main> <!-- Bagian utama konten -->
+        <h2>Checkout</h2> <!-- Judul halaman -->
 
-        <h3>Informasi Pembeli</h3>
-        <form id="checkoutForm">
-            <label for="nama">Nama:</label>
-            <input type="text" id="nama" name="nama" required>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <label for="alamat">Alamat:</label>
-            <textarea id="alamat" name="alamat" required></textarea>
-            <button type="submit" class="btn">Konfirmasi Pembelian</button>
+        <div id="keranjangItems"></div> <!-- Tempat menampilkan daftar produk dalam keranjang -->
+        <p id="totalHarga"></p> <!-- Menampilkan total harga -->
+
+        <h3>Informasi Pembeli</h3> <!-- Judul form -->
+        <form id="checkoutForm"> <!-- Form checkout -->
+            <label for="nama">Nama:</label> <!-- Label untuk input nama -->
+            <input type="text" id="nama" name="nama" required> <!-- Input nama, wajib diisi -->
+
+            <label for="email">Email:</label> <!-- Label untuk input email -->
+            <input type="email" id="email" name="email" required> <!-- Input email, wajib dan harus format email -->
+
+            <label for="alamat">Alamat:</label> <!-- Label untuk alamat -->
+            <textarea id="alamat" name="alamat" required></textarea> <!-- Input alamat dalam bentuk textarea -->
+
+            <button type="submit" class="btn">Konfirmasi Pembelian</button> <!-- Tombol kirim form -->
         </form>
     </main>
 
-    <footer>
-        <h3>Kontak</h3>
-        <p>Email: info@namatoko.com</p>
-        <p>No HP: 08123456789</p>
-        <p>Alamat: Jl. Contoh No. 123, Kota</p>
+    <footer> <!-- Bagian bawah halaman -->
+        <h3>Kontak</h3> <!-- Judul bagian kontak -->
+        <p>Email: info@namatoko.com</p> <!-- Alamat email toko -->
+        <p>No HP: 08123456789</p> <!-- Nomor telepon toko -->
+        <p>Alamat: Jl. Contoh No. 123, Kota</p> <!-- Alamat toko -->
     </footer>
 
     <script>
+        // Ambil data keranjang dari localStorage (jika ada), atau buat array kosong
         let keranjang = JSON.parse(localStorage.getItem('keranjang')) || [];
-        let total = 0;
+        let total = 0; // Inisialisasi total harga
 
+        // Fungsi untuk menampilkan isi keranjang di halaman
         function tampilkanKeranjang() {
-            const keranjangItems = document.getElementById('keranjangItems');
-            keranjangItems.innerHTML = '';
-            total = 0;
+            const keranjangItems = document.getElementById('keranjangItems'); // Ambil elemen untuk menampilkan item
+            keranjangItems.innerHTML = ''; // Kosongkan dulu isi sebelumnya
+            total = 0; // Reset total
 
             if (keranjang.length === 0) {
+                // Jika keranjang kosong
                 keranjangItems.innerHTML = '<p>Keranjang Anda kosong.</p>';
             } else {
+                // Jika ada item dalam keranjang
                 keranjang.forEach(item => {
-                    const div = document.createElement('div');
-                    div.innerText = `${item.nama} - Rp ${item.harga.toLocaleString()}`;
-                    keranjangItems.appendChild(div);
-                    total += item.harga;
+                    const div = document.createElement('div'); // Buat elemen div untuk tiap item
+                    div.innerText = `${item.nama} - Rp ${item.harga.toLocaleString()}`; // Tampilkan nama dan harga
+                    keranjangItems.appendChild(div); // Tambahkan ke halaman
+                    total += item.harga; // Tambah ke total
                 });
+                // Tampilkan total harga
                 document.getElementById('totalHarga').innerText = `Total: Rp ${total.toLocaleString()}`;
             }
+
+            // Update jumlah item di ikon keranjang
             document.getElementById('itemCount').innerText = keranjang.length;
         }
 
+        // Ketika form dikirim
         document.getElementById('checkoutForm').onsubmit = function(event) {
-            event.preventDefault();
+            event.preventDefault(); // Cegah reload halaman
+
+            // Ambil nilai dari form
             const nama = document.getElementById('nama').value;
             const email = document.getElementById('email').value;
             const alamat = document.getElementById('alamat').value;
 
-            // Simpan data pembeli dan total ke localStorage
+            // Buat objek data checkout
             const checkoutData = {
                 nama,
                 email,
@@ -84,15 +99,18 @@
                 keranjang,
                 total
             };
+
+            // Simpan data ke localStorage untuk digunakan di halaman berikutnya
             localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
 
-            // Hapus keranjang dari localStorage
+            // Hapus isi keranjang dari localStorage
             localStorage.removeItem('keranjang');
 
             // Arahkan ke halaman hasil checkout
             window.location.href = 'checkout_result.html';
         };
 
+        // Jalankan fungsi tampilkanKeranjang saat halaman dimuat
         window.onload = tampilkanKeranjang;
     </script>
 </body>
