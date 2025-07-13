@@ -1,0 +1,115 @@
+<!DOCTYPE html> <!-- Ini memberi tahu browser bahwa kita pakai HTML versi terbaru (HTML5) -->
+<html lang="id"> <!-- Ini artinya bahasa halaman web ini adalah Bahasa Indonesia -->
+<head>
+  <meta charset="UTF-8" /> <!-- Supaya huruf dan simbol bisa terbaca dengan benar -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- Agar tampilan web menyesuaikan dengan ukuran layar (misalnya HP atau laptop) -->
+  <title>Beli - TS Beauty</title> <!-- Nama tab yang muncul di browser -->
+  <link rel="stylesheet" href="style.css" /> <!-- Menghubungkan ke file CSS untuk mengatur tampilan -->
+</head>
+<body>
+  <!-- BAGIAN ATAS WEBSITE -->
+  <header>
+    <h1>TS Beauty</h1> <!-- Nama toko -->
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li> <!-- Link ke halaman depan -->
+        <li><a href="produk.html">Produk</a></li> <!-- Link ke daftar produk -->
+        <li><a href="kontak.html">Kontak</a></li> <!-- Link ke halaman kontak -->
+        <li><a href="keranjang.html">
+          <i class="fas fa-shopping-cart"></i> <!-- Icon keranjang belanja -->
+          (<span id="itemCount">0</span>) <!-- Menampilkan jumlah item di keranjang -->
+        </a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- BAGIAN UTAMA HALAMAN -->
+  <main>
+    <h2 class="centered">Detail Pembelian</h2> <!-- Judul bagian keranjang -->
+    <div id="keranjangItems" class="keranjang-container"></div> <!-- Tempat untuk menampilkan daftar produk yang dibeli -->
+    <p id="totalHarga" class="total-harga"></p> <!-- Menampilkan total harga semua produk -->
+
+    <h3 class="centered">Informasi Pembeli</h3> <!-- Judul form -->
+    <form id="checkoutForm"> <!-- Form pengisian data pembeli -->
+      <label for="nama">Nama:</label>
+      <input type="text" id="nama" name="nama" required /> <!-- Kolom input nama -->
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required /> <!-- Kolom input email -->
+
+      <label for="alamat">Alamat:</label>
+      <textarea id="alamat" name="alamat" required></textarea> <!-- Kolom input alamat -->
+
+      <button type="submit" class="btn">Konfirmasi Pembelian</button> <!-- Tombol untuk mengirim data -->
+      <p id="notif" class="success-message">Data berhasil dikirim! Mengarahkan ke halaman konfirmasi...</p> <!-- Pesan sukses (sembunyi dulu, muncul setelah submit) -->
+    </form>
+  </main>
+
+  <!-- BAGIAN BAWAH WEBSITE -->
+  <footer>
+    <h3>Kontak</h3>
+    <p>Email: info@tsbeauty.com</p>
+    <p>No HP: 08123456789</p>
+    <p>Alamat: Jl. Rancabatok, Kota</p>
+  </footer>
+
+  <!-- BAGIAN SCRIPT JAVASCRIPT -->
+  <script>
+    // Ambil data dari localStorage (tempat penyimpanan sementara di browser)
+    let keranjang = JSON.parse(localStorage.getItem('keranjang')) || [];
+    let total = 0; // Buat variabel untuk menyimpan total harga
+
+    // Fungsi untuk menampilkan produk yang ada di keranjang
+    function tampilkanKeranjang() {
+      const keranjangItems = document.getElementById('keranjangItems');
+      keranjangItems.innerHTML = ''; // Kosongkan dulu isi tampilan
+      total = 0; // Set total harga jadi 0 dulu
+
+      // Kalau keranjang kosong
+      if (keranjang.length === 0) {
+        keranjangItems.innerHTML = '<p class="kosong">Keranjang Anda kosong.</p>';
+        document.getElementById('totalHarga').innerText = '';
+        return;
+      }
+
+      // Kalau keranjang ada isinya
+      keranjang.forEach(item => {
+        const div = document.createElement('div'); // Buat elemen baru
+        div.className = 'keranjang-item'; // Tambahkan kelas CSS
+        div.innerHTML = `<p>${item.nama} - <strong>Rp ${item.harga.toLocaleString()}</strong></p>`; // Tampilkan nama dan harga
+        keranjangItems.appendChild(div); // Tambahkan ke dalam halaman
+        total += item.harga; // Tambahkan ke total harga
+      });
+
+      // Tampilkan total harga dan jumlah item
+      document.getElementById('totalHarga').innerText = `Total: Rp ${total.toLocaleString()}`;
+      document.getElementById('itemCount').innerText = keranjang.length;
+    }
+
+    // Saat form dikirim
+    document.getElementById('checkoutForm').onsubmit = function(e) {
+      e.preventDefault(); // Mencegah halaman reload
+
+      // Ambil data dari form
+      const nama = document.getElementById('nama').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const alamat = document.getElementById('alamat').value.trim();
+
+      // Cek apakah ada yang kosong
+      if (!nama || !email || !alamat) return alert("Lengkapi semua form!");
+
+      // Simpan data ke localStorage
+      const data = { nama, email, alamat, keranjang, total };
+      localStorage.setItem("checkoutData", JSON.stringify(data)); // Simpan data checkout
+      localStorage.removeItem("keranjang"); // Hapus data keranjang setelah dibeli
+
+      // Tampilkan pesan sukses dan pindah ke halaman lain
+      document.getElementById("notif").style.display = "block";
+      setTimeout(() => window.location.href = "checkout_result.html", 1500); // Pindah halaman setelah 1,5 detik
+    };
+
+    // Jalankan fungsi saat halaman selesai dimuat
+    window.onload = tampilkanKeranjang;
+  </script>
+</body>
+</html>

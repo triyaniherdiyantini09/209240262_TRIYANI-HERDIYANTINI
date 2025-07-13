@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail Produk - TS Beauty</title>
+
+  <!-- Memanggil file CSS eksternal untuk styling -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Memanggil ikon dari Font Awesome (untuk ikon keranjang, dll) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+</head>
+<body>
+
+  <!-- Bagian header: Judul dan navigasi -->
+  <header>
+    <h1 id="judulProduk">Detail Produk</h1> <!-- Judul akan diganti secara dinamis -->
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="produk.html">Produk</a></li>
+        <li><a href="kontak.html">Kontak</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Bagian utama: menampilkan detail produk -->
+  <main style="text-align:center; padding:40px;">
+    <h2 id="namaProduk"></h2> <!-- Nama produk -->
+    <img id="gambarProduk" src="" alt="Produk" style="max-width:300px; border-radius:8px;" />
+    <p id="deskripsiProduk" style="margin-top:20px;"></p> <!-- Deskripsi produk -->
+    <p id="hargaProduk"></p> <!-- Harga produk -->
+    <div id="tombolAksi"></div> <!-- Tombol beli dan keranjang -->
+  </main>
+
+  <!-- Footer halaman -->
+  <footer style="text-align:center; padding:20px; background:#ffe3ed;">
+    <p>&copy; 2025 TS Beauty</p>
+  </footer>
+
+  <!-- Script untuk mengatur data produk -->
+  <script>
+    // Daftar produk (data statis)
+    const produk = [
+      { id: 1, nama: "Lunelle Serum", harga: 100000, diskon: 20, deskripsi: "Serum malam untuk mencerahkan wajah.", gambar: "produk1.jpg" },
+      { id: 2, nama: "Auréa Sunlock", harga: 200000, diskon: 10, deskripsi: "Cocok untuk outdoor.", gambar: "produk2.jpg" },
+      { id: 3, nama: "Bluré Glow", harga: 300000, diskon: 0, deskripsi: "Primer untuk glow natural.", gambar: "produk3.jpg" },
+      { id: 4, nama: "Paket Hemat Naturae", harga: 400000, diskon: 15, deskripsi: "Hemat untuk mandi lembut.", gambar: "produk4.jpg" },
+      { id: 5, nama: "Clairee Powder", harga: 500000, diskon: 5, deskripsi: "Bedak ringan dan mewah.", gambar: "produk5.jpg" },
+      { id: 6, nama: "Aurabelle Lips Serum", harga: 180000, diskon: 15, deskripsi: "Serum bibir lembap instan.", gambar: "produk6.jpg" },
+      { id: 7, nama: "Amoura Twist", harga: 210000, diskon: 0, deskripsi: "Anting emas kecil elegan.", gambar: "produk7.jpg" },
+      { id: 8, nama: "Nolira Hoops", harga: 275000, diskon: 10, deskripsi: "Hoops minimalis modern.", gambar: "produk8.jpg" },
+      { id: 9, nama: "Évolia Drops", harga: 320000, diskon: 0, deskripsi: "Anting menjuntai berkilau.", gambar: "produk9.jpg" },
+      { id: 10, nama: "Corale Dream Matte", harga: 199000, diskon: 5, deskripsi: "Lip matte coral segar.", gambar: "produk10.jpg" },
+      { id: 11, nama: "Morning Bloom Set", harga: 145000, diskon: 0, deskripsi: "Paket mandi aroma bunga.", gambar: "produk11.jpg" },
+      { id: 12, nama: "Velours Bloom", harga: 160000, diskon: 5, deskripsi: "Aroma feminin lembut.", gambar: "produk12.jpg" }
+    ];
+
+    // Mengambil parameter "id" dari URL, contoh: produk.html?id=2
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get("id")); // Ubah ke angka
+    const data = produk.find(p => p.id === id); // Cari produk berdasarkan id
+
+    // Jika produk ditemukan
+    if (data) {
+      const hargaAkhir = data.harga - (data.harga * data.diskon / 100); // Hitung harga setelah diskon
+
+      // Menampilkan detail produk ke elemen HTML
+      document.getElementById('judulProduk').innerText = data.nama;
+      document.getElementById('namaProduk').innerText = data.nama;
+      document.getElementById('gambarProduk').src = data.gambar;
+      document.getElementById('gambarProduk').alt = data.nama;
+      document.getElementById('deskripsiProduk').innerText = data.deskripsi;
+
+      // Menampilkan harga, jika ada diskon maka tampilkan harga coret
+      document.getElementById('hargaProduk').innerHTML =
+        data.diskon > 0
+          ? `Harga: <del>Rp ${data.harga.toLocaleString()}</del> <strong>Rp ${hargaAkhir.toLocaleString()}</strong>`
+          : `Harga: <strong>Rp ${data.harga.toLocaleString()}</strong>`;
+
+      // Tambahkan tombol beli dan tombol tambah ke keranjang
+      document.getElementById('tombolAksi').innerHTML = `
+        <button class="btn" onclick="beliProduk('${data.nama}', ${hargaAkhir})">Beli</button>
+        <button class="btn" onclick="tambahKeKeranjang('${data.nama}', ${hargaAkhir})">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      `;
+    } else {
+      // Jika tidak ditemukan produk sesuai id, tampilkan pesan
+      document.querySelector('main').innerHTML = "<p>Produk tidak ditemukan. <a href='index.html'>Kembali</a></p>";
+    }
+
+    // Fungsi untuk menambahkan produk ke keranjang
+    function tambahKeKeranjang(nama, harga) {
+      const keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
+      keranjang.push({ nama, harga }); // Tambah produk ke array keranjang
+      localStorage.setItem("keranjang", JSON.stringify(keranjang)); // Simpan kembali ke localStorage
+      alert(`${nama} telah ditambahkan ke keranjang.`);
+    }
+
+    // Fungsi untuk membeli produk langsung (ke halaman beli.html)
+    function beliProduk(nama, harga) {
+      const beli = [{ nama, harga }]; // Hanya produk ini yang akan dibeli
+      localStorage.setItem("keranjang", JSON.stringify(beli)); // Simpan sebagai keranjang
+      window.location.href = "beli.html"; // Pindah ke halaman beli
+    }
+  </script>
+</body>
+</html>

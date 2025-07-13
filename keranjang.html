@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Keranjang Belanja - TS Beauty</title>
+
+  <!-- Menghubungkan ke file CSS untuk tampilan -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Menghubungkan ke Font Awesome agar bisa pakai icon seperti ikon keranjang dan tempat sampah -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+</head>
+<body>
+
+  <!-- Bagian atas halaman -->
+  <header>
+    <h1>TS Beauty</h1>
+    <nav>
+      <ul>
+        <!-- Navigasi ke halaman lain -->
+        <li><a href="index.html">Home</a></li>
+        <li><a href="produk.html">Produk</a></li>
+        <li><a href="kontak.html">Kontak</a></li>
+        <li>
+          <a href="keranjang.html">
+            <!-- Menampilkan ikon keranjang dan jumlah item -->
+            <i class="fas fa-shopping-cart"></i> (<span id="itemCount">0</span>)
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Bagian utama halaman -->
+  <main class="keranjang-page">
+    <h2>Keranjang Belanja</h2>
+
+    <!-- Tempat menampilkan daftar produk yang ditambahkan ke keranjang -->
+    <div id="keranjangItems" class="keranjang-container"></div>
+
+    <!-- Menampilkan total harga -->
+    <p id="totalHarga" class="total-harga"></p>
+
+    <!-- Tombol aksi pengguna -->
+    <div class="btn-wrapper">
+      <button onclick="lanjutKeCheckout()" class="btn">Lanjut ke Checkout</button>
+      <button onclick="kembaliKeHome()" class="btn kembali">Kembali ke Home</button>
+    </div>
+  </main>
+
+  <!-- Bagian bawah halaman -->
+  <footer>
+    <h3>Kontak</h3>
+    <p>Email: info@tsbeauty.com</p>
+    <p>No HP: 08123456789</p>
+    <p>Alamat: Jl. Rancabatok, Kota</p>
+  </footer>
+
+  <!-- Script JavaScript -->
+  <script>
+    // Ambil data keranjang dari localStorage, atau gunakan array kosong jika belum ada
+    let keranjang = JSON.parse(localStorage.getItem('keranjang')) || [];
+
+    // Fungsi untuk menampilkan isi keranjang
+    function tampilkanKeranjang() {
+      const container = document.getElementById('keranjangItems'); // Tempat tampilkan produk
+      container.innerHTML = ''; // Kosongkan dulu isinya
+      let total = 0; // Untuk menghitung total harga
+
+      // Jika keranjang kosong, tampilkan pesan
+      if (keranjang.length === 0) {
+        container.innerHTML = '<p class="kosong">Keranjang Anda kosong.</p>';
+        document.getElementById('totalHarga').innerText = '';
+        return;
+      }
+
+      // Tampilkan setiap produk dalam keranjang
+      keranjang.forEach((item, i) => {
+        const div = document.createElement('div'); // Buat elemen baru
+        div.className = 'keranjang-item';
+
+        // Isi elemen dengan nama produk, harga, dan tombol hapus
+        div.innerHTML = `
+          <div class="info">
+            <p><strong>${item.nama}</strong></p>
+            <p>Rp ${item.harga.toLocaleString()}</p>
+          </div>
+          <button class="hapus" onclick="hapusDariKeranjang(${i})"><i class="fas fa-trash"></i></button>
+        `;
+
+        container.appendChild(div); // Tambahkan ke tampilan
+        total += item.harga; // Tambahkan ke total
+      });
+
+      // Tampilkan total harga dan jumlah item
+      document.getElementById('totalHarga').innerText = `Total: Rp ${total.toLocaleString()}`;
+      document.getElementById('itemCount').innerText = keranjang.length;
+    }
+
+    // Fungsi untuk menghapus produk dari keranjang
+    function hapusDariKeranjang(index) {
+      if (confirm("Hapus produk ini dari keranjang?")) {
+        keranjang.splice(index, 1); // Hapus dari array
+        localStorage.setItem('keranjang', JSON.stringify(keranjang)); // Simpan lagi ke localStorage
+        tampilkanKeranjang(); // Tampilkan ulang isi keranjang
+      }
+    }
+
+    // Fungsi jika pengguna klik "Lanjut ke Checkout"
+    function lanjutKeCheckout() {
+      if (keranjang.length > 0) {
+        window.location.href = 'checkout.html'; // Arahkan ke halaman checkout
+      } else {
+        alert('Keranjang kosong. Tambahkan produk terlebih dahulu.');
+      }
+    }
+
+    // Fungsi jika pengguna klik "Kembali ke Home"
+    function kembaliKeHome() {
+      window.location.href = 'index.html'; // Arahkan ke halaman utama
+    }
+
+    // Saat halaman selesai dimuat, tampilkan isi keranjang
+    window.onload = tampilkanKeranjang;
+  </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - TS Beauty</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Login ke TS Beauty</h1>
+  </header>
+
+  <form onsubmit="return loginUser(event)">
+    <label for="email">Email:</label>
+    <input type="email" id="email" required />
+
+    <label for="password">Kata Sandi:</label>
+    <input type="password" id="password" required />
+
+    <button type="submit">Masuk</button>
+  </form>
+
+  <footer>
+    <p>Belum punya akun? <a href="register.html">Daftar di sini</a></p>
+  </footer>
+
+  <script>
+    function loginUser(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      const savedUser = JSON.parse(localStorage.getItem('user'));
+
+      if (!savedUser) {
+        alert('Akun tidak ditemukan. Silakan daftar terlebih dahulu.');
+        return;
+      }
+
+      if (savedUser.email === email && savedUser.password === password) {
+        alert('Login berhasil! Selamat datang, ' + savedUser.name);
+        // Simpan sesi login (opsional)
+        localStorage.setItem('isLoggedIn', 'true');
+        window.location.href = 'index.html';
+      } else {
+        alert('Email atau kata sandi salah!');
+      }
+    }
+  </script>
+</body>
+</html>

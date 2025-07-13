@@ -1,0 +1,101 @@
+<!DOCTYPE html> <!-- Menandakan ini adalah dokumen HTML5 -->
+<html lang="id"> <!-- Mengatur bahasa halaman menjadi Bahasa Indonesia -->
+<head>
+  <meta charset="UTF-8" /> <!-- Mengatur agar karakter bisa tampil dengan benar (huruf, simbol, dll) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <!-- Supaya tampilan bisa menyesuaikan layar HP/laptop -->
+  <title>Checkout Berhasil - TS Beauty</title> <!-- Judul tab di browser -->
+  <link rel="stylesheet" href="style.css" /> <!-- Menghubungkan ke file CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/> <!-- Untuk icon dari Font Awesome -->
+</head>
+<body>
+
+  <!-- BAGIAN ATAS / HEADER -->
+  <header>
+    <h1>TS Beauty</h1> <!-- Nama toko -->
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li> <!-- Link ke halaman utama -->
+        <li><a href="produk.html">Produk</a></li> <!-- Link ke daftar produk -->
+        <li><a href="kontak.html">Kontak</a></li> <!-- Link ke kontak -->
+        <li>
+          <a href="keranjang.html">
+            <i class="fas fa-shopping-cart"></i> <!-- Icon keranjang -->
+            (<span id="itemCount">0</span>) <!-- Menampilkan jumlah produk di keranjang -->
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- BAGIAN UTAMA HALAMAN -->
+  <main class="checkout-result">
+    <h2 class="centered">🎉 Terima Kasih Telah Berbelanja!</h2> <!-- Ucapan terima kasih -->
+    <p class="success-message centered">Pembayaran Anda berhasil dan akan segera kami proses.</p> <!-- Notifikasi sukses -->
+
+    <div id="checkoutSummary" class="checkout-summary-box"></div> <!-- Tempat menampilkan ringkasan belanja -->
+
+    <div class="btn-wrapper centered">
+      <button onclick="kembaliKeHome()" class="btn">Kembali ke Home</button> <!-- Tombol kembali ke halaman utama -->
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <h3>Kontak</h3>
+    <p>Email: info@tsbeauty.com</p> <!-- Kontak email -->
+    <p>No HP: 08123456789</p> <!-- Kontak nomor HP -->
+    <p>Alamat: Jl. Rancabatok, Kota Bandung</p> <!-- Alamat toko -->
+  </footer>
+
+  <!-- SCRIPT JAVASCRIPT -->
+  <script>
+    // Fungsi untuk menampilkan data checkout ke halaman
+    function tampilkanCheckoutSummary() {
+      const checkoutData = JSON.parse(localStorage.getItem('checkoutData')); // Ambil data checkout dari localStorage
+      const summary = document.getElementById('checkoutSummary'); // Ambil elemen tempat ringkasan ditampilkan
+
+      // Jika ada data checkout
+      if (checkoutData) {
+        const { nama, email, alamat, keranjang, total } = checkoutData; // Ambil datanya
+
+        // Buat isi HTML-nya
+        let html = `
+          <div class="checkout-info">
+            <h3>📦 Informasi Pembeli</h3>
+            <p><strong>Nama:</strong> ${nama}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Alamat:</strong> ${alamat}</p>
+            <h3 style="margin-top:30px;">🛍️ Produk yang Dibeli:</h3>
+            <ul class="produk-list">
+        `;
+
+        // Tambahkan setiap produk yang dibeli ke daftar
+        keranjang.forEach(item => {
+          html += `<li>${item.nama} - Rp ${item.harga.toLocaleString()}</li>`;
+        });
+
+        // Tambahkan total harga
+        html += `
+            </ul>
+            <h3 class="total-harga">Total: Rp ${total.toLocaleString()}</h3>
+          </div>
+        `;
+
+        summary.innerHTML = html; // Tampilkan di halaman
+      } else {
+        // Jika tidak ada data, tampilkan pesan
+        summary.innerHTML = '<p class="kosong centered">Tidak ada data checkout.</p>';
+      }
+    }
+
+    // Fungsi jika tombol "Kembali ke Home" diklik
+    function kembaliKeHome() {
+      localStorage.removeItem('checkoutData'); // Hapus data checkout dari penyimpanan
+      window.location.href = 'index.html'; // Pindah ke halaman utama
+    }
+
+    // Jalankan fungsi saat halaman sudah selesai dimuat
+    window.onload = tampilkanCheckoutSummary;
+  </script>
+</body>
+</html>

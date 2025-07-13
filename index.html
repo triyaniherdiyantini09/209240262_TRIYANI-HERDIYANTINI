@@ -1,0 +1,174 @@
+<!DOCTYPE html> <!-- Menunjukkan bahwa ini adalah dokumen HTML5 -->
+<html lang="id"> <!-- Bahasa halaman ini adalah Bahasa Indonesia -->
+<head>
+  <meta charset="UTF-8" /> <!-- Mengatur karakter agar simbol dan huruf tampil dengan benar -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <!-- Membuat halaman responsif di semua ukuran layar -->
+  <title>TS Beauty</title> <!-- Judul yang muncul di tab browser -->
+  <link rel="stylesheet" href="style.css" /> <!-- Menghubungkan ke file CSS eksternal -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/> <!-- Link ke ikon dari Font Awesome -->
+</head>
+<body>
+  <!-- Bagian Header -->
+  <header>
+    <h1>TS Beauty</h1> <!-- Judul / nama toko di atas -->
+
+    <!-- Navigasi Menu -->
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li> <!-- Link ke halaman utama -->
+        <li><a href="produk.html">Produk</a></li> <!-- Link ke halaman produk -->
+        <li><a href="kontak.html">Kontak</a></li> <!-- Link ke halaman kontak -->
+        <li>
+          <a href="keranjang.html">
+            <i class="fas fa-shopping-cart"></i> <!-- Ikon keranjang belanja -->
+            (<span id="itemCount">0</span>) <!-- Jumlah item di keranjang -->
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Kolom pencarian -->
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Cari produk..." oninput="cariProduk()" />
+    </div>
+  </header>
+  
+  <!-- Bagian Utama -->
+  <main>
+
+    <!-- Bagian Testimoni -->
+    <section class="testimoni">
+      <h2>Apa Kata Mereka?</h2>
+      <div class="testi-container">
+        <!-- Testimoni 1 -->
+        <div class="testi-item">
+          <img src="https://ui-avatars.com/api/?name=Ayu&background=fce4ec&color=d63384" alt="Ayu" class="testi-avatar" />
+          <p>"Produk TS Beauty sangat bagus dan cocok di kulit saya. Pengiriman cepat dan aman."</p>
+          <h4>- Ayu, Jakarta</h4>
+        </div>
+
+        <!-- Testimoni 2 -->
+        <div class="testi-item">
+          <img src="https://ui-avatars.com/api/?name=Rina&background=fce4ec&color=d63384" alt="Rina" class="testi-avatar" />
+          <p>"Sudah langganan 3 bulan, hasilnya nyata! Saya suka banget sama packaging-nya."</p>
+          <h4>- Rina, Bandung</h4>
+        </div>
+
+        <!-- Testimoni 3 -->
+        <div class="testi-item">
+          <img src="https://ui-avatars.com/api/?name=Dwi&background=fce4ec&color=d63384" alt="Dwi" class="testi-avatar" />
+          <p>"Customer service-nya ramah dan bantu banget pas saya bingung. Bakal order lagi!"</p>
+          <h4>- Dwi, Surabaya</h4>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bagian Produk -->
+    <h2>Produk Kami</h2>
+    <div class="produk" id="produkList"></div> <!-- Tempat produk akan ditampilkan oleh JavaScript -->
+
+  </main>
+
+  <!-- Bagian Footer -->
+  <footer>
+    <h3>Kontak</h3>
+    <p>Email: tsbeauty@gmail.com</p>
+    <p>Instagram: tsbeauty</p>
+    <p>Alamat: Jl. Rancabatok, Kota Bandung</p>
+  </footer>
+
+  <!-- Bagian JavaScript -->
+  <script>
+    // Daftar produk dalam bentuk array
+    const produk = [
+      { id: 1, nama: "Lunelle Serum", harga: 100000, diskon: 20, deskripsi: "Serum malam...", gambar: "produk1.jpg", rating: 4 },
+      { id: 2, nama: "Auréa Sunlock", harga: 200000, diskon: 10, deskripsi: "Elegan dan cocok...", gambar: "produk2.jpg", rating: 4 },
+      { id: 3, nama: "Bluré Glow", harga: 300000, diskon: 0, deskripsi: "Primer yang menghaluskan...", gambar: "produk3.jpg", rating: 3 },
+      { id: 4, nama: "Paket Hemat Naturae", harga: 400000, diskon: 15, deskripsi: "Rasakan kelembutan...", gambar: "produk4.jpg", rating: 5 },
+      { id: 5, nama: "Clairee Powder", harga: 500000, diskon: 5, deskripsi: "Kemewahan dalam sapuan...", gambar: "produk5.jpg", rating: 4 },
+      { id: 6, nama: "Aurabelle Lips Serum", harga: 180000, diskon: 15, deskripsi: "Memberikan kelembapan...", gambar: "produk6.jpg", rating: 3 },
+      { id: 7, nama: "Amoura Twist", harga: 210000, diskon: 0, deskripsi: "Anting kecil simpel...", gambar: "produk7.jpg", rating: 3 },
+      { id: 8, nama: "Nolira Hoops", harga: 275000, diskon: 10, deskripsi: "Anting minimalis...", gambar: "produk8.jpg", rating: 4 },
+      { id: 9, nama: "Évolia Drops", harga: 320000, diskon: 0, deskripsi: "Desain panjang menjuntai...", gambar: "produk9.jpg", rating: 5 },
+      { id: 10, nama: "Corale Dream Matte", harga: 199000, diskon: 5, deskripsi: "Coral segar, semi-matte...", gambar: "produk10.jpg", rating: 4 },
+      { id: 11, nama: "Morning Bloom Set", harga: 145000, diskon: 0, deskripsi: "Kesan segar & lembut...", gambar: "produk11.jpg", rating: 3 },
+      { id: 12, nama: "Velours Bloom", harga: 160000, diskon: 5, deskripsi: "Kesan lembut & feminin.", gambar: "produk12.jpg", rating: 4 }
+    ];
+
+    // Fungsi untuk menampilkan bintang rating
+    function buatRating(bintang) {
+      let html = '';
+      for (let i = 0; i < 5; i++) {
+        html += i < bintang ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+      }
+      return html;
+    }
+
+    // Fungsi untuk menampilkan semua produk di halaman
+    function tampilkanProduk(list) {
+      const container = document.getElementById("produkList");
+      container.innerHTML = "";
+
+      list.forEach(item => {
+        const hargaAkhir = item.harga - (item.harga * item.diskon / 100); // Harga setelah diskon
+        const el = document.createElement("div");
+        el.className = "item";
+
+        el.innerHTML = `
+          ${item.diskon > 0 ? `<div class="badge">-${item.diskon}%</div>` : ''}
+          <a href="produk.html?id=${item.id}" onclick='simpanDetail(${JSON.stringify(item)})' class="item-link">
+            <img src="${item.gambar}" alt="${item.nama}" />
+            <h3>${item.nama}</h3>
+          </a>
+          <p class="rating">${buatRating(item.rating)}</p>
+          <p>
+            ${item.diskon > 0 ? `<del>Rp ${item.harga.toLocaleString()}</del>` : ''}
+            <strong>Rp ${hargaAkhir.toLocaleString()}</strong>
+          </p>
+          <p>${item.deskripsi}</p>
+          <div class="button-container">
+            <button class="btn" onclick="event.preventDefault(); beliProduk('${item.nama}', ${hargaAkhir})">Beli</button>
+            <button class="btn keranjang" onclick="event.preventDefault(); tambahKeKeranjang('${item.nama}', ${hargaAkhir})"><i class="fas fa-shopping-cart"></i></button>
+          </div>
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    // Menyimpan detail produk ke localStorage (digunakan saat klik gambar)
+    function simpanDetail(data) {
+      localStorage.setItem("detailProduk", JSON.stringify(data));
+    }
+
+    // Fungsi pencarian produk saat mengetik di kolom pencarian
+    function cariProduk() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const hasil = produk.filter(p => p.nama.toLowerCase().includes(input));
+      tampilkanProduk(hasil);
+    }
+
+    // Tambah produk ke keranjang
+    function tambahKeKeranjang(nama, harga) {
+      let keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
+      keranjang.push({ nama, harga });
+      localStorage.setItem("keranjang", JSON.stringify(keranjang));
+      document.getElementById("itemCount").innerText = keranjang.length;
+      alert(`${nama} telah ditambahkan ke keranjang.`);
+    }
+
+    // Langsung beli produk, lalu pindah ke halaman beli
+    function beliProduk(nama, harga) {
+      let keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
+      keranjang.push({ nama, harga });
+      localStorage.setItem("keranjang", JSON.stringify(keranjang));
+      window.location.href = "beli.html";
+    }
+
+    // Saat halaman selesai dimuat
+    window.onload = () => {
+      tampilkanProduk(produk); // tampilkan semua produk
+      document.getElementById("itemCount").innerText = (JSON.parse(localStorage.getItem("keranjang")) || []).length;
+    };
+  </script>
+</body>
+</html>
